@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">DMTQ Local Server</string>
+    <string name="title_home">Game Server</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="server_preferences">SERVER_PREFERENCES</string>
+    <string name="start_server_btn">Toggle Server</string>
+    <string name="host_edit_label">Host Address</string>
+    <string name="asset_edit_label">Asset Server Address</string>
+    <string name="host_address">HOST_ADDRESS</string>
+    <string name="asset_address">ASSET_ADDRESS</string>
+    <string name="save_btn">Save</string>
+    <string name="server_help_text">
+        Asset server is your use for download song and movie, not including patterns.\n
+        You can host those file on other server. \n
+        Notice: server address must not include \"http://\" and back slash.
+    </string>
+</resources>

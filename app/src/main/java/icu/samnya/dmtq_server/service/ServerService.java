@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 
+import icu.samnya.dmtq_server.proxy.ProxyServer;
 import icu.samnya.dmtq_server.server.GameServer;
 
 public class ServerService extends Service {
@@ -28,7 +29,10 @@ public class ServerService extends Service {
 
     private static GameServer gameServer;
 
+    private static ProxyServer proxy;
+
     private int port = 3456;
+    private int proxyPort = 3457;
 
     private Binder binder = new ServerBinder();
 
@@ -42,14 +46,19 @@ public class ServerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         SharedPreferences sharedPref = getSharedPreferences("SERVER_PREFERENCES", Context.MODE_PRIVATE);
         String HOST = sharedPref.getString("HOST_ADDRESS", "localhost:3456");
+        String PROXY = sharedPref.getString("PROXY_ADDRESS", "localhost:3457");
+
         int port = 3456;
+        int proxyPort = 3457;
         try {
-            String[] address = HOST.split(":");
-            port = Integer.parseInt(address[1]);
+            String[] game = HOST.split(":");
+            String[] proxy = PROXY.split(":");
+            port = Integer.parseInt(game[1]);
+            proxyPort = Integer.parseInt(proxy[1]);
         } catch (Exception e) {
-            port = 3456;
         }
 
+        this.proxyPort = proxyPort;
         this.port = port;
 
         // If the system recreate the service, run the server.
@@ -74,6 +83,15 @@ public class ServerService extends Service {
     }
 
     public void runServer() {
+
+        if(proxy == null) {
+            new Thread(() -> {
+                proxy = new ProxyServer(proxyPort);
+                proxy.start();
+            }).start();
+        }
+
+
         if (gameServer == null) {
             try {
                 if (!isExternalStorageWritable()) {
@@ -105,6 +123,9 @@ public class ServerService extends Service {
                 Toast.makeText(this.getApplicationContext(), "Server stop", Toast.LENGTH_SHORT).show();
             }
             gameServer = null;
+        }
+        if(proxy.isRunning()) {
+            proxy.stop();
         }
     }
 

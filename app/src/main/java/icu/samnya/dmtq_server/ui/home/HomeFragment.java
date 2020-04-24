@@ -32,6 +32,8 @@ public class HomeFragment extends Fragment {
 
     private Button serverButton;
 
+    private SharedPreferences sharedPref;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
@@ -40,15 +42,18 @@ public class HomeFragment extends Fragment {
         serverButton = root.findViewById(R.id.server_button);
 
         // Load server info to edit text
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("SERVER_PREFERENCES", Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences("SERVER_PREFERENCES", Context.MODE_PRIVATE);
         String host = sharedPref.getString(getString(R.string.host_address), "localhost:3456");
         String asset = sharedPref.getString(getString(R.string.asset_address), "localhost:3456");
+        String proxy = sharedPref.getString(getString(R.string.proxy_address), "localhost:3457");
 
         EditText hostText = root.findViewById(R.id.host_edit_text);
         EditText assetText = root.findViewById(R.id.assets_edit_text);
+        EditText proxyText = root.findViewById(R.id.proxy_edit_text);
 
         hostText.setText(host);
         assetText.setText(asset);
+        proxyText.setText(proxy);
 
         // Start service
         getActivity().startService(intent);
@@ -64,23 +69,27 @@ public class HomeFragment extends Fragment {
 
         Button hostEditButton = root.findViewById(R.id.host_edit_button);
         Button assetEditButton = root.findViewById(R.id.assets_edit_button);
+        Button proxyEditButton = root.findViewById(R.id.proxy_edit_button);
         hostEditButton.setOnClickListener((event) -> {
-            String text = hostText.getText().toString();
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.host_address), text);
-            editor.apply();
-            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+            saveSetting(hostText, getString(R.string.host_address));
         });
         assetEditButton.setOnClickListener((event) -> {
-            String text = assetText.getText().toString();
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.asset_address), text);
-            editor.apply();
-            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+            saveSetting(assetText, getString(R.string.asset_address));
+        });
+        proxyEditButton.setOnClickListener((event) -> {
+            saveSetting(proxyText, getString(R.string.proxy_address));
         });
 
 
         return root;
+    }
+
+    private void saveSetting(EditText text, String dest) {
+        String value = text.getText().toString();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(dest, value);
+        editor.apply();
+        Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
     }
 
     private void updateStatus() {

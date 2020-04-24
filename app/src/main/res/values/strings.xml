@@ -10,6 +10,8 @@
     <string name="asset_edit_label">Asset Server Address</string>
     <string name="host_address">HOST_ADDRESS</string>
     <string name="asset_address">ASSET_ADDRESS</string>
+    <string name="proxy_address">PROXY_ADDRESS</string>
+    <string name="proxy_edit_label">Proxy Server Address</string>
     <string name="save_btn">Save</string>
     <string name="server_help_text">
         Asset server is your use for download song and movie, not including patterns.\n

@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
         if(!sharedPref.contains(getResources().getString(R.string.asset_address))) {
             editor.putString(getString(R.string.asset_address), "localhost:3456");
         }
+
+        if(!sharedPref.contains(getResources().getString(R.string.proxy_address))) {
+            editor.putString(getString(R.string.proxy_address), "localhost:3457");
+        }
         editor.commit();
     }
 

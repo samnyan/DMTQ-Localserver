@@ -1,5 +1,6 @@
 package icu.samnya.dmtq_server.proxy;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.net.ServerSocket;
@@ -18,8 +19,11 @@ public class ProxyServer {
 
 	private final int port;
 
-	public ProxyServer(int port) {
+	private Context ctx;
+
+	public ProxyServer(int port, Context ctx) {
 		this.port = port;
+		this.ctx = ctx;
 		threads = new ArrayList<>();
 	}
 
@@ -38,7 +42,7 @@ public class ProxyServer {
 		while(running){
 			try {
 				Socket socket = serverSocket.accept();
-				Thread thread = new Thread(new RequestHandler(socket));
+				Thread thread = new Thread(new RequestHandler(socket, ctx));
 
 				threads.add(thread);
 				

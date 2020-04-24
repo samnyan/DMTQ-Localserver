@@ -228,7 +228,7 @@ public class DMQHandler implements BaseHandler {
             case "getOwnQuestList": return gameGetOwnQuestList();
             case "getOwnSongList": return gameGetOwnSongList();
             case "getPatternUrl": return gameGetPatternUrl(params);
-            case "getPreviewPlayInfo": return gameGetPreviewPlayInfo();
+            case "getPreviewPlayInfo": return gameGetPreviewPlayInfo(params);
             case "getSongList": return gameGetSongList();
             case "getSongUrl": return gameGetSongUrl(params);
             case "getUserAsset": return gameGetUserAsset(params);
@@ -754,15 +754,49 @@ public class DMQHandler implements BaseHandler {
      * Handle request go to <code>game.getPreviewPlayInfo</code>
      * @return The json object of result
      */
-    private JSONObject gameGetPreviewPlayInfo() throws JSONException  {
+    private JSONObject gameGetPreviewPlayInfo(JSONArray params) throws JSONException  {
+        int guid = params.getInt(0);
+        int patternId = params.getInt(1);
+
+        Member user = dbService.getUserByGuid(guid);
         JSONObject result = new JSONObject();
         result.put("note_count",3);
 
-        result.put("slot_item_effect", new JSONObject()
-                .put("slot_item1", JSONObject.NULL)
-                .put("slot_item2", JSONObject.NULL)
-                .put("slot_item3", JSONObject.NULL)
-        );
+        JSONObject slot_item_effect = new JSONObject();
+        if(user.getSlotItem1() != null) {
+            slot_item_effect.put("slot_item1", new JSONObject()
+                    .put("item_id", user.getSlotItem1())
+                    .put("effect_type", "N")
+                    .put("effect_point", 1)
+                    .put("effect_count", 1)
+                    .put("effect_special", "")
+            );
+        } else {
+            slot_item_effect.put("slot_item1", JSONObject.NULL);
+        }
+        if(user.getSlotItem2() != null) {
+            slot_item_effect.put("slot_item2", new JSONObject()
+                    .put("item_id", user.getSlotItem2())
+                    .put("effect_type", "N")
+                    .put("effect_point", 1)
+                    .put("effect_count", 1)
+                    .put("effect_special", "")
+            );
+        } else {
+            slot_item_effect.put("slot_item2", JSONObject.NULL);
+        }
+        if(user.getSlotItem3() != null) {
+            slot_item_effect.put("slot_item3", new JSONObject()
+                    .put("item_id", user.getSlotItem3())
+                    .put("effect_type", "N")
+                    .put("effect_point", 1)
+                    .put("effect_count", 1)
+                    .put("effect_special", "")
+            );
+        } else {
+            slot_item_effect.put("slot_item3", JSONObject.NULL);
+        }
+        result.put("slot_item_effect", slot_item_effect);
 
         result.put("in_game_item", new JSONObject()
                 .put("in_game_item1", new JSONObject()
@@ -1201,7 +1235,10 @@ public class DMQHandler implements BaseHandler {
         for(int i = 90001; i <= 90009; i ++) {
             ids.add(i);
         }
-        for(int i = 100001; i <= 100050; i ++) {
+        for(int i = 100001; i <= 100020; i ++) {
+            ids.add(i);
+        }
+        for(int i = 190001; i <= 190020; i ++) {
             ids.add(i);
         }
         for(int i = 0; i < ids.size(); i ++) {

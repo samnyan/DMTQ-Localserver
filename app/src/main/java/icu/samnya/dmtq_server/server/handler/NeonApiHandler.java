@@ -38,7 +38,19 @@ public class NeonApiHandler implements BaseHandler {
         if(uri.startsWith("/api/resource/rooting_app.json?device_cd=ANDROID&local_cd=ENG")) {
             return handleRoutingApp();
         }
-
+        if(uri.startsWith("/api/apns/576/register/")) {
+            return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\n" +
+                    "    \"error_params\": null,\n" +
+                    "    \"error_timestamp\": \"2019-02-01 13:08:20\",\n" +
+                    "    \"error_host\": \"neon-api3.nwz.kr\",\n" +
+                    "    \"error_message\": \"java.lang.NullPointerException\",\n" +
+                    "    \"result_msg\": \"API_ERR_EXEC\",\n" +
+                    "    \"result_code\": \"300\"\n" +
+                    "}");
+        }
+        if(uri.startsWith("/api/product/app/")) {
+            return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"value\": [],\"result_msg\": \"API_OK\",\"result_code\": \"000\"}");
+        }
         return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"value\":\"OK\",\"result_code\":\"000\",\"result_msg\":\"API_OK\"}");
         } catch (JSONException e) {
             throw new RuntimeException("JSON ERROR");
@@ -52,7 +64,7 @@ public class NeonApiHandler implements BaseHandler {
         long now = System.currentTimeMillis();
         JSONObject root = new JSONObject();
         JSONObject value = new JSONObject();
-        value.put("access_token", m.getId() + "|576|ANDROID|KR|0f4ba353adde7d46f1fcde20b3bc66dd3680216a|" + System.currentTimeMillis());
+        value.put("access_token", m.getId() + "|576|IPHONE|KR|0f4ba353adde7d46f1fcde20b3bc66dd3680216a|" + System.currentTimeMillis());
 
         JSONObject member = new JSONObject();
         member.put("crt_dt", now); // time
@@ -68,7 +80,7 @@ public class NeonApiHandler implements BaseHandler {
         member.put("recent_app_id", JSONObject.NULL);
         member.put("email", JSONObject.NULL);
         member.put("anonymous_yn", "N");
-        member.put("reg_path", JSONObject.NULL);
+        member.put("reg_path", "GAMECENTER");
         member.put("recent_app_title", JSONObject.NULL);
         member.put("last_msg_dt", JSONObject.NULL);
         member.put("new_msg_yn", JSONObject.NULL);

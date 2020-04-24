@@ -44,14 +44,17 @@ public class HomeFragment extends Fragment {
         // Load server info to edit text
         sharedPref = getActivity().getSharedPreferences("SERVER_PREFERENCES", Context.MODE_PRIVATE);
         String host = sharedPref.getString(getString(R.string.host_address), "localhost:3456");
+        String ssl = sharedPref.getString(getString(R.string.ssl_address), "localhost:3457");
         String asset = sharedPref.getString(getString(R.string.asset_address), "localhost:3456");
         String proxy = sharedPref.getString(getString(R.string.proxy_address), "localhost:3457");
 
         EditText hostText = root.findViewById(R.id.host_edit_text);
+        EditText sslText = root.findViewById(R.id.ssl_edit_text);
         EditText assetText = root.findViewById(R.id.assets_edit_text);
         EditText proxyText = root.findViewById(R.id.proxy_edit_text);
 
         hostText.setText(host);
+        sslText.setText(ssl);
         assetText.setText(asset);
         proxyText.setText(proxy);
 
@@ -68,10 +71,14 @@ public class HomeFragment extends Fragment {
         });
 
         Button hostEditButton = root.findViewById(R.id.host_edit_button);
+        Button sslEditButton = root.findViewById(R.id.ssl_edit_button);
         Button assetEditButton = root.findViewById(R.id.assets_edit_button);
         Button proxyEditButton = root.findViewById(R.id.proxy_edit_button);
         hostEditButton.setOnClickListener((event) -> {
             saveSetting(hostText, getString(R.string.host_address));
+        });
+        sslEditButton.setOnClickListener((event) -> {
+            saveSetting(sslText, getString(R.string.ssl_address));
         });
         assetEditButton.setOnClickListener((event) -> {
             saveSetting(assetText, getString(R.string.asset_address));

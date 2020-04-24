@@ -1,21 +1,27 @@
 <resources>
     <string name="app_name">DMTQ Local Server</string>
     <string name="title_home">Game Server</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard">Help</string>
     <string name="title_notifications">Notifications</string>
 
     <string name="server_preferences">SERVER_PREFERENCES</string>
     <string name="start_server_btn">Toggle Server</string>
-    <string name="host_edit_label">Host Address</string>
-    <string name="asset_edit_label">Asset Server Address</string>
     <string name="host_address">HOST_ADDRESS</string>
+    <string name="host_edit_label">HTTP Server Address</string>
+    <string name="ssl_address">SSL_ADDRESS</string>
+    <string name="ssl_edit_label">HTTPS Server Address</string>
     <string name="asset_address">ASSET_ADDRESS</string>
+    <string name="asset_edit_label">Asset Server Address</string>
     <string name="proxy_address">PROXY_ADDRESS</string>
     <string name="proxy_edit_label">Proxy Server Address</string>
     <string name="save_btn">Save</string>
+    <string name="home_help_text">Go to help page to see more</string>
     <string name="server_help_text">
-        Asset server is your use for download song and movie, not including patterns.\n
-        You can host those file on other server. \n
-        Notice: server address must not include \"http://\" and back slash.
+        "Asset server is your use for download song and movie, not including patterns.\n
+You can host those file on other server. \n
+Notice: server address must not include \"http://\" and back slash. \n\n
+For using with iOS, you must change \"HTTP Server Address\" and \"Proxy Server Address\" to this device\'s IP, keep the port unchanged if you don't know what that means.\n
+Then use Safari to open the HTTP Server Address, follow the instruction.\n
+If you using hotspot tethering, for most Android device the default IP is 192.168.43.1"\n\n
     </string>
 </resources>

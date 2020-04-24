@@ -1,5 +1,7 @@
 package icu.samnya.dmtq_server.proxy;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -17,6 +19,8 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class RequestHandler implements Runnable {
 
@@ -29,8 +33,11 @@ public class RequestHandler implements Runnable {
 
 	private BufferedWriter toClientWriter;
 
-	RequestHandler(Socket clientSocket){
+	private Context ctx;
+
+	RequestHandler(Socket clientSocket, Context ctx){
 		this.clientSocket = clientSocket;
+		this.ctx = ctx;
 		try{
 			this.clientSocket.setSoTimeout(2000);
 			toClientStream = clientSocket.getInputStream();
@@ -88,6 +95,20 @@ public class RequestHandler implements Runnable {
 
 	private void handleHttpRequest(String method, String urlString){
 		try {
+			if(matchUrl(urlString)) {
+				int start = urlString.indexOf("http://");
+				start = urlString.indexOf("/", start + 7);
+				if(urlString.length() > start + 1) {
+					urlString = urlString.substring(start + 1);
+				} else {
+					urlString = "";
+				}
+				SharedPreferences sharedPref = ctx.getSharedPreferences("SERVER_PREFERENCES", Context.MODE_PRIVATE);
+				String HOST = sharedPref.getString("HOST_ADDRESS", "localhost:3456");
+//				String HOST = "192.168.101.208";
+				urlString = "http://" + HOST + "/" + urlString;
+				Log.i(LOG_TAG, "Redirect http to : " + urlString);
+			}
 			URL url = new URL(urlString);
 			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
@@ -144,6 +165,25 @@ public class RequestHandler implements Runnable {
 				boolean isError = (conn.getResponseCode() >= 400);
 				InputStream in = isError ? conn.getErrorStream() : conn.getInputStream();
 				OutputStream out = clientSocket.getOutputStream();
+
+				// Send header
+				StringBuilder sb = new StringBuilder();
+				sb.append("HTTP/1.0 ");
+				sb.append(conn.getResponseCode()).append(" ");
+				sb.append(conn.getResponseMessage()).append("\r\n");
+				sb.append("Proxy-Agent: DMTQProxy/0.2\r\n");
+
+				for(Map.Entry<String, List<String>> entry : conn.getHeaderFields().entrySet()) {
+					String key = entry.getKey();
+					List<String> values = entry.getValue();
+					for (String val: values) {
+						sb.append(key).append(": ").append(val).append("\r\n");
+					}
+				}
+				sb.append("\r\n");
+				toClientWriter.write(sb.toString());
+				toClientWriter.flush();
+
 				byte[] buffer = new byte[1024];
 				int len = in.read(buffer);
 				while (len != -1) {
@@ -177,6 +217,13 @@ public class RequestHandler implements Runnable {
 		int port  = Integer.parseInt(pair[1]);
 
 		// Check server address and redirect it to localhost
+		if(matchUrl(url)) {
+			SharedPreferences sharedPref = ctx.getSharedPreferences("SERVER_PREFERENCES", Context.MODE_PRIVATE);
+			String SSL = sharedPref.getString("SSL_ADDRESS", "localhost:3457");
+			String[] addr = SSL.split(":");
+			url = addr[0];
+			port = Integer.parseInt(addr[1]);
+		}
 
 		try{
 			// Only first line of HTTPS request has been read at this point (CONNECT *)
@@ -313,6 +360,19 @@ public class RequestHandler implements Runnable {
 			return null;
 		}
 		return byteArrayOutputStream.toString("UTF-8");
+	}
+
+	private boolean matchUrl(String url) {
+		if(url.contains("pmang.com")) {
+			return true;
+		}
+		if(url.contains("pmangplus.com")) {
+			return true;
+		}
+		if(url.contains("neonapi.com")) {
+			return true;
+		}
+		return false;
 	}
 }
 

@@ -39,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
             editor.putString(getString(R.string.asset_address), "localhost:3456");
         }
 
+        if(!sharedPref.contains(getResources().getString(R.string.ssl_address))) {
+            editor.putString(getString(R.string.ssl_address), "localhost:3457");
+        }
+
         if(!sharedPref.contains(getResources().getString(R.string.proxy_address))) {
-            editor.putString(getString(R.string.proxy_address), "localhost:3457");
+            editor.putString(getString(R.string.proxy_address), "localhost:3458");
         }
         editor.commit();
     }

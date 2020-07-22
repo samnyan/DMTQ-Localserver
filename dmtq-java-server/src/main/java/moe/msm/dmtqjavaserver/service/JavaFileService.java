@@ -1,6 +1,8 @@
 package moe.msm.dmtqjavaserver.service;
 
 import moe.msm.dmtqserver.external.StaticFileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -9,6 +11,8 @@ import java.io.File;
  */
 public class JavaFileService implements StaticFileService {
 
+    private static final Logger logger = LoggerFactory.getLogger(JavaFileService.class);
+
     private final String dir;
     public JavaFileService() {
         dir = System.getProperty("user.dir");
@@ -16,6 +20,8 @@ public class JavaFileService implements StaticFileService {
 
     @Override
     public File getFileByPath(String path) {
-        return new File(dir, path);
+        File file = new File(dir, path);
+        logger.info("Get File: {}", file.getAbsolutePath());
+        return file;
     }
 }

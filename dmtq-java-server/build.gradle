@@ -17,5 +17,6 @@ version '1.0-SNAPSHOT'
 dependencies {
     implementation "org.slf4j:slf4j-simple:${slf4jVersion}"
     implementation "org.nanohttpd:nanohttpd:${nanohttpdVersion}"
+    implementation 'com.github.samnyan:netty-hijack-proxy:1.1'
     implementation project(":gameserver")
 }

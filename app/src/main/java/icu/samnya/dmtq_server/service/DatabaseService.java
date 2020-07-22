@@ -1,4 +1,4 @@
-package icu.samnya.dmtq_server.server;
+package icu.samnya.dmtq_server.service;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -7,13 +7,13 @@ import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
-import icu.samnya.dmtq_server.server.model.Member;
-import icu.samnya.dmtq_server.server.model.Play;
-import icu.samnya.dmtq_server.server.util.HashUtil;
+import moe.msm.dmtqserver.external.GameDatabaseService;
+import moe.msm.dmtqserver.model.Member;
+import moe.msm.dmtqserver.model.Play;
+import moe.msm.dmtqserver.util.HashUtil;
 
-public class DatabaseService {
+public class DatabaseService implements GameDatabaseService {
 
     private final SQLiteDatabase db;
 

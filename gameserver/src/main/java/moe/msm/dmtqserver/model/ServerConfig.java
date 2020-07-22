@@ -15,6 +15,14 @@ public class ServerConfig {
 
     private String assetAddress;
 
+    public ServerConfig() {
+        this.hostname = "0.0.0.0";
+        this.port = 3456;
+        this.hostAddress = "localhost:3456";
+        this.proxyAddress = "localhost:3458";
+        this.assetAddress = "localhost:3456";
+    }
+
     public ServerConfig(String hostname, int port, String hostAddress, String proxyAddress, String assetAddress) {
         this.hostname = hostname;
         this.port = port;

@@ -14,16 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyStore;
 
-import javax.net.ssl.KeyManagerFactory;
-
-import fi.iki.elonen.NanoHTTPD;
 import icu.samnya.dmtq_server.proxy.ProxyServer;
-import icu.samnya.dmtq_server.server.GameServer;
+import moe.msm.dmtqserver.GameServer;
+import moe.msm.dmtqserver.model.ServerConfig;
 
 public class ServerService extends Service {
 
@@ -35,6 +30,9 @@ public class ServerService extends Service {
 
     private static GameServer gameServer;
     private static GameServer sslGameServer;
+
+    private static DatabaseService dbService;
+    private static AndroidStaticFileService staticFileService;
 
     private static ProxyServer proxyServer;
 
@@ -82,6 +80,7 @@ public class ServerService extends Service {
         String HOST = sharedPref.getString("HOST_ADDRESS", "localhost:3456");
         String SSL = sharedPref.getString("SSL_ADDRESS", "localhost:3457");
         String PROXY = sharedPref.getString("PROXY_ADDRESS", "localhost:3458");
+        String ASSET = sharedPref.getString("ASSET_ADDRESS", "localhost:3456");
 
         int port = 3456;
         int sslPort = 3457;
@@ -100,6 +99,13 @@ public class ServerService extends Service {
         this.sslPort = sslPort;
         this.proxyPort = proxyPort;
 
+        ServerConfig config = new ServerConfig();
+        config.setHostname("0.0.0.0");
+        config.setPort(this.port);
+        config.setHostAddress(HOST);
+        config.setProxyAddress(PROXY);
+        config.setAssetAddress(ASSET);
+
         if(serverThread == null) {
             serverThread = new Thread(() -> {
                 proxyServer = new ProxyServer(this.proxyPort, this);
@@ -108,34 +114,40 @@ public class ServerService extends Service {
             serverThread.start();
         }
 
-
-
         try {
             if (!isExternalStorageWritable()) {
                 throw new RuntimeException("NO PERMISSION TO WRITE FILE");
             }
-            File dir = getExternalFilesDir("");
-            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(new File(dir, "dmtq.db"), null);
+
+            if (dbService == null) {
+                File dir = getExternalFilesDir("");
+                SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(new File(dir, "dmtq.db"), null);
+                dbService = new DatabaseService(db);
+            }
+
+            if (staticFileService == null) {
+                staticFileService = new AndroidStaticFileService(this);
+            }
 
             if (gameServer == null) {
-                gameServer = new GameServer(port, this, db);
+                gameServer = new GameServer(config, dbService, staticFileService);
             }
-            if (sslGameServer == null) {
-                char[] passwordArray = "password".toCharArray();
-                KeyStore keystore = KeyStore.getInstance("PKCS12");
-                File key = new File(dir, "keystore.jks");
-                if (key.exists()) {
-                    InputStream kis = new FileInputStream(key);
-                    keystore.load(kis, passwordArray);
-                    KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                    keyManagerFactory.init(keystore, "password".toCharArray());
-
-                    sslGameServer = new GameServer(sslPort, this, db);
-                    sslGameServer.makeSecure(NanoHTTPD.makeSSLSocketFactory(keystore, keyManagerFactory), null);
-                } else {
-                    throw new RuntimeException("Keystore file not found");
-                }
-            }
+//            if (sslGameServer == null) {
+//                char[] passwordArray = "password".toCharArray();
+//                KeyStore keystore = KeyStore.getInstance("PKCS12");
+//                File key = new File(dir, "keystore.jks");
+//                if (key.exists()) {
+//                    InputStream kis = new FileInputStream(key);
+//                    keystore.load(kis, passwordArray);
+//                    KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+//                    keyManagerFactory.init(keystore, "password".toCharArray());
+//
+//                    sslGameServer = new GameServer(sslPort, this, db);
+//                    sslGameServer.makeSecure(NanoHTTPD.makeSSLSocketFactory(keystore, keyManagerFactory), null);
+//                } else {
+//                    throw new RuntimeException("Keystore file not found");
+//                }
+//            }
         } catch (Exception e) {
             Log.e("ServerService", e.getMessage(), e);
             Toast.makeText(this.getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -174,13 +186,13 @@ public class ServerService extends Service {
             }
             gameServer = null;
         }
-        if(sslGameServer != null) {
-            if(sslGameServer.isAlive()) {
-                sslGameServer.stop();
-                Toast.makeText(this.getApplicationContext(), "Server stop", Toast.LENGTH_SHORT).show();
-            }
-            sslGameServer = null;
-        }
+//        if(sslGameServer != null) {
+//            if(sslGameServer.isAlive()) {
+//                sslGameServer.stop();
+//                Toast.makeText(this.getApplicationContext(), "Server stop", Toast.LENGTH_SHORT).show();
+//            }
+//            sslGameServer = null;
+//        }
         if(serverThread != null) {
             if(proxyServer.isRunning()) {
                 proxyServer.stop();

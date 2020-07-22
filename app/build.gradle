@@ -61,4 +61,5 @@ dependencies {
 
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation project(":gameserver")
 }

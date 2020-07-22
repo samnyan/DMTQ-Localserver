@@ -7,6 +7,8 @@ import moe.msm.dmtqserver.handler.DMQHandler;
 import moe.msm.dmtqserver.handler.NeonApiHandler;
 import moe.msm.dmtqserver.handler.StaticHandler;
 import moe.msm.dmtqserver.model.ServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 public class GameServer extends NanoHTTPD {
 
+    private static final Logger logger = LoggerFactory.getLogger(GameServer.class);
 
     public static void main(String[] args) {
         System.out.println("OK");
@@ -58,7 +61,7 @@ public class GameServer extends NanoHTTPD {
 
         // Get parameters
         // Including application/x-www-form-urlencoded
-        Map<String, List<String>> parms = session.getParameters();
+        Map<String, List<String>> params = session.getParameters();
 
         // Read http post body
         Map<String, String> files = new HashMap<String, String>();
@@ -72,9 +75,7 @@ public class GameServer extends NanoHTTPD {
             }
         }
 
-        System.out.print("Request: " + method + " " + uri);
-        System.out.print(" Parms: " + parms.toString());
-        System.out.println(" Body: " + files.toString());
+        logger.info("Request: {} {} Params: {} Body: {}", method, uri, params, files);
 
         // Controller
         if(uri.equals("/")) {
@@ -115,13 +116,13 @@ public class GameServer extends NanoHTTPD {
         }
 
         if(uri.startsWith("/DMQ/")) {
-            return dmqHandler.handle(session, method, uri, headers, parms, files);
+            return dmqHandler.handle(session, method, uri, headers, params, files);
         }
 
         if(uri.startsWith("/api/")) {
-            return neonApiHandler.handle(session, method, uri, headers, parms, files);
+            return neonApiHandler.handle(session, method, uri, headers, params, files);
         }
 
-        return staticHandler.handle(session, method, uri, headers, parms, files);
+        return staticHandler.handle(session, method, uri, headers, params, files);
     }
 }

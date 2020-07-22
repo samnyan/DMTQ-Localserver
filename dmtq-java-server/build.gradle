@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+ext {
+    javaMainClass = "moe.msm.dmtqjavaserver.Main"
+}
+
+application {
+    mainClassName = javaMainClass
+}
+
+group 'moe.msm.dmtqjavaserver'
+version '1.0-SNAPSHOT'
+
+dependencies {
+    implementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+    implementation "org.nanohttpd:nanohttpd:${nanohttpdVersion}"
+    implementation project(":gameserver")
+}

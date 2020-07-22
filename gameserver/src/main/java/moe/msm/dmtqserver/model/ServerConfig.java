@@ -70,4 +70,15 @@ public class ServerConfig {
     public void setAssetAddress(String assetAddress) {
         this.assetAddress = assetAddress;
     }
+
+    @Override
+    public String toString() {
+        return "ServerConfig{" +
+                "hostname='" + hostname + '\'' +
+                ", port=" + port +
+                ", hostAddress='" + hostAddress + '\'' +
+                ", proxyAddress='" + proxyAddress + '\'' +
+                ", assetAddress='" + assetAddress + '\'' +
+                '}';
+    }
 }

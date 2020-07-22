@@ -1,27 +1,19 @@
 plugins {
     id 'java'
-    id 'application'
 }
 
-ext {
-    javaMainClass = "moe.msm.dmtqserver.GameServer"
-}
-
-application {
-    mainClassName = javaMainClass
-}
 
 group 'moe.msm.dmtqserver'
 version '1.0-SNAPSHOT'
 
 dependencies {
     implementation 'io.netty:netty-all:4.1.51.Final'
-    implementation 'org.slf4j:slf4j-simple:1.7.30'
+    implementation "org.slf4j:slf4j-simple:${slf4jVersion}"
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.66'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
 
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation "org.nanohttpd:nanohttpd:${nanohttpdVersion}"
     implementation 'org.json:json:20200518'
 }

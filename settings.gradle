@@ -1,3 +1,4 @@
 rootProject.name='DMTQ Local Server'
-include ':app'
 include ':gameserver'
+include ':dmtq-android-server'
+include ':dmtq-java-server'

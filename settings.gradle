@@ -1,2 +1,3 @@
 rootProject.name='DMTQ Local Server'
 include ':app'
+include ':gameserver'

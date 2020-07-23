@@ -11,6 +11,9 @@ import java.util.List;
 public interface GameDatabaseService {
     void close();
 
+    /**
+     * Initialize database like create tables. This won't get call by the server.
+     */
     void init();
 
     Member getUserByUdid(String udid);

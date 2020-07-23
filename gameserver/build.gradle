@@ -15,5 +15,5 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
 
     implementation "org.nanohttpd:nanohttpd:${nanohttpdVersion}"
-    implementation 'org.json:json:20200518'
+    implementation "org.json:json:${orgjsonVersion}"
 }

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.file.Path;
 
 /**
  * @author sam_nya (privateamusement@protonmail.com)
@@ -15,7 +16,7 @@ public class JavaFileService implements StaticFileService {
 
     private final String dir;
     public JavaFileService() {
-        dir = System.getProperty("user.dir");
+        dir = Path.of(System.getProperty("user.dir"), "files").toString();
     }
 
     @Override

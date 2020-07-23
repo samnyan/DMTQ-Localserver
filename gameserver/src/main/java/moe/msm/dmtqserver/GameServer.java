@@ -81,7 +81,7 @@ public class GameServer extends NanoHTTPD {
         if(uri.equals("/")) {
             StringBuilder html = new StringBuilder();
             html.append("DMQ Server running<br>");
-            html.append("Cert download here:<a href=\"ca.crt\">ca.crt</a> <br>");
+            html.append("Cert download here:<a href=\"rootCa.crt\">rootCa.crt</a> <br>");
             html.append("PAC(Proxy auto config) URL here:<a href=\"pac\">LONG PRESS TO COPY</a> <br>");
             html.append("<br>");
             html.append("<br>");

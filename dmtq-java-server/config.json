@@ -1,0 +1,34 @@
+{
+  "database": {
+    "url": "jdbc:sqlite:db.sqlite"
+  },
+  "gameServer": {
+    "host": "0.0.0.0",
+    "hostAddress": "localhost:3456",
+    "assetAddress": "localhost:3456",
+    "proxyAddress": "localhost:3458",
+    "httpServer": {
+      "port": 3456
+    },
+    "httpsServer": {
+      "port": 3457,
+      "keyStorePath": "files/keystore.jks",
+      "keyStorePassword": "password"
+    }
+  },
+  "proxyServer": {
+    "host": "0.0.0.0",
+    "port": 3458,
+    "rootCertPath": "files/rootCa.crt",
+    "rootKeyPath": "files/key.pem",
+    "redirectTarget": "127.0.0.1",
+    "insecure": true,
+    "redirectHttpPort": 3456,
+    "redirectHttpsPort": 3457,
+    "redirectList": [
+      "pmang.com",
+      "pmangplus.com",
+      "neonapi.com"
+    ]
+  }
+}

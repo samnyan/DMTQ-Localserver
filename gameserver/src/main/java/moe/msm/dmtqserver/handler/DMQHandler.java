@@ -7,6 +7,7 @@ import moe.msm.dmtqserver.external.StaticFileService;
 import moe.msm.dmtqserver.model.Member;
 import moe.msm.dmtqserver.model.Play;
 import moe.msm.dmtqserver.model.ServerConfig;
+import moe.msm.dmtqserver.model.impl.PlayData;
 import moe.msm.dmtqserver.util.HashUtil;
 import moe.msm.dmtqserver.util.JsonUtil;
 import moe.msm.dmtqserver.util.StreamUtil;
@@ -1010,7 +1011,7 @@ public class DMQHandler implements BaseHandler {
 
         Play play = dbService.getRecordByGuidAndPatternId(guid, patternId);
         if(play == null) {
-            play = new Play(
+            play = new PlayData(
                     patternId,
                     guid
             );

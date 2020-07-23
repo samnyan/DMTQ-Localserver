@@ -3,111 +3,44 @@ package moe.msm.dmtqserver.model;
 /**
  * member object store in database
  */
-public class Member {
-    private Integer id;
-    private String nickname;
-    private String guid;
-    private String puid;
-    private String udid;
-    private String code;
-    private Integer slotItem1;
-    private Integer slotItem2;
-    private Integer slotItem3;
-    private Integer slotItem4;
+public interface Member {
+    Integer getId();
 
-    public Member() {
-    }
+    void setId(Integer id);
 
-    public Member(Integer id, String nickname, String guid, String puid, String udid, String code, Integer slotItem1, Integer slotItem2, Integer slotItem3, Integer slotItem4) {
-        this.id = id;
-        this.nickname = nickname;
-        this.guid = guid;
-        this.puid = puid;
-        this.udid = udid;
-        this.code = code;
-        this.slotItem1 = slotItem1;
-        this.slotItem2 = slotItem2;
-        this.slotItem3 = slotItem3;
-        this.slotItem4 = slotItem4;
-    }
+    String getNickname();
 
-    public Integer getId() {
-        return id;
-    }
+    void setNickname(String nickname);
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    String getGuid();
 
-    public String getNickname() {
-        return nickname;
-    }
+    void setGuid(String guid);
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
+    String getPuid();
 
-    public String getGuid() {
-        return guid;
-    }
+    void setPuid(String puid);
 
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
+    String getUdid();
 
-    public String getPuid() {
-        return puid;
-    }
+    void setUdid(String udid);
 
-    public void setPuid(String puid) {
-        this.puid = puid;
-    }
+    String getCode();
 
-    public String getUdid() {
-        return udid;
-    }
+    void setCode(String code);
 
-    public void setUdid(String udid) {
-        this.udid = udid;
-    }
+    Integer getSlotItem1();
 
-    public String getCode() {
-        return code;
-    }
+    void setSlotItem1(Integer slotItem1);
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    Integer getSlotItem2();
 
-    public Integer getSlotItem1() {
-        return slotItem1;
-    }
+    void setSlotItem2(Integer slotItem2);
 
-    public void setSlotItem1(Integer slotItem1) {
-        this.slotItem1 = slotItem1;
-    }
+    Integer getSlotItem3();
 
-    public Integer getSlotItem2() {
-        return slotItem2;
-    }
+    void setSlotItem3(Integer slotItem3);
 
-    public void setSlotItem2(Integer slotItem2) {
-        this.slotItem2 = slotItem2;
-    }
+    Integer getSlotItem4();
 
-    public Integer getSlotItem3() {
-        return slotItem3;
-    }
-
-    public void setSlotItem3(Integer slotItem3) {
-        this.slotItem3 = slotItem3;
-    }
-
-    public Integer getSlotItem4() {
-        return slotItem4;
-    }
-
-    public void setSlotItem4(Integer slotItem4) {
-        this.slotItem4 = slotItem4;
-    }
+    void setSlotItem4(Integer slotItem4);
 }

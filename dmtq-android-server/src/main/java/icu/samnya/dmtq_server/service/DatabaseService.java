@@ -11,6 +11,8 @@ import java.util.List;
 import moe.msm.dmtqserver.external.GameDatabaseService;
 import moe.msm.dmtqserver.model.Member;
 import moe.msm.dmtqserver.model.Play;
+import moe.msm.dmtqserver.model.impl.MemberData;
+import moe.msm.dmtqserver.model.impl.PlayData;
 import moe.msm.dmtqserver.util.HashUtil;
 
 public class DatabaseService implements GameDatabaseService {
@@ -74,7 +76,7 @@ public class DatabaseService implements GameDatabaseService {
             String code = "CODE_" + id;
             code = HashUtil.getMd5(code.getBytes());
             code = code.substring(code.length() - 10);
-            Member member = new Member(id, "NewUser", String.valueOf(id), String.valueOf(id), udid, code, null, null, null, null);
+            Member member = new MemberData(id, "NewUser", String.valueOf(id), String.valueOf(id), udid, code, null, null, null, null);
             ContentValues sql = memberToSql(member);
             long result = db.insert(TABLE_MEMBER, null, sql);
             if(result == -1) {
@@ -173,7 +175,7 @@ public class DatabaseService implements GameDatabaseService {
     }
 
     private Member mapToMember(Cursor cursor) {
-        return new Member(
+        return new MemberData(
                 cursor.getInt(cursor.getColumnIndex("id")),
                 cursor.getString(cursor.getColumnIndex("nickname")),
                 cursor.getString(cursor.getColumnIndex("guid")),
@@ -203,7 +205,7 @@ public class DatabaseService implements GameDatabaseService {
     }
 
     private Play mapToPlay(Cursor cursor) {
-        return new Play(
+        return new PlayData(
                 cursor.getInt(cursor.getColumnIndex("pattern_id")),
                 cursor.getInt(cursor.getColumnIndex("user_id")),
                 cursor.getInt(cursor.getColumnIndex("score")),

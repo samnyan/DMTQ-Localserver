@@ -9,7 +9,7 @@ import moe.msm.dmtqserver.model.Play;
 public class PlayData implements Play {
 
     // Added for ormlite
-    @DatabaseField(id = true)
+    @DatabaseField(generatedId = true)
     private Integer id;
 
     @DatabaseField(columnName = "pattern_id")

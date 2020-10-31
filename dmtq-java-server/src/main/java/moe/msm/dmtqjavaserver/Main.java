@@ -146,7 +146,7 @@ public class Main {
                                 public InetSocketAddress proxyToServerResolutionStarted(
                                         String resolvingServerHostAndPort) {
                                     String[] hp = resolvingServerHostAndPort.split(":");
-                                    System.out.println(hp[0]);
+                                    logger.info("Proxy to: {}", hp[0]);
                                     for (String domain :
                                             redirectList) {
                                         if(hp[0].contains(domain)) {

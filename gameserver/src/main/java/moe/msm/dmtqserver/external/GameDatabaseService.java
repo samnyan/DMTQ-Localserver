@@ -22,7 +22,7 @@ public interface GameDatabaseService {
 
     void updateUser(Member member);
 
-    List<Play> getRecordsByGuid(int guid);
+    List<? extends Play> getRecordsByGuid(int guid);
 
     Play getRecordByGuidAndPatternId(int guid, int patternId);
 

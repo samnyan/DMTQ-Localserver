@@ -593,7 +593,7 @@ public class DMQHandler implements BaseHandler {
      */
     private JSONObject gameGetOwnPatternScore(JSONArray params) throws JSONException{
         int guid = params.getInt(0);
-        List<Play> recordList = dbService.getRecordsByGuid(guid);
+        List<Play> recordList = (List<Play>) dbService.getRecordsByGuid(guid);
         JSONArray result = new JSONArray();
         for (int i = 0; i < recordList.size(); i++) {
             Play play = recordList.get(i);

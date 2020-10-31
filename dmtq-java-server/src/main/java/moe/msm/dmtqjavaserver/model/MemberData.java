@@ -10,7 +10,7 @@ import moe.msm.dmtqserver.model.Member;
  */
 @DatabaseTable(tableName = "Member")
 public class MemberData implements Member {
-    @DatabaseField(id = true)
+    @DatabaseField(generatedId = true)
     private Integer id;
 
     @DatabaseField(columnName = "nickname")

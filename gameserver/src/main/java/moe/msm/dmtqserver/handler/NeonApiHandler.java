@@ -29,27 +29,35 @@ public class NeonApiHandler implements BaseHandler {
     public NanoHTTPD.Response handle(NanoHTTPD.IHTTPSession session, NanoHTTPD.Method method, String uri, Map<String, String> headers, Map<String, List<String>> parms, Map<String, String> body) {
 
         try{
-        // Just match the url here
-        if(uri.startsWith("/api/accounts/v3/global/login_dmq")) {
-            return handleLoginDmq(parms);
-        }
-        if(uri.startsWith("/api/resource/rooting_app.json?device_cd=ANDROID&local_cd=ENG")) {
-            return handleRoutingApp();
-        }
-        if(uri.startsWith("/api/apns/576/register/")) {
-            return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\n" +
-                    "    \"error_params\": null,\n" +
-                    "    \"error_timestamp\": \"2019-02-01 13:08:20\",\n" +
-                    "    \"error_host\": \"neon-api3.nwz.kr\",\n" +
-                    "    \"error_message\": \"java.lang.NullPointerException\",\n" +
-                    "    \"result_msg\": \"API_ERR_EXEC\",\n" +
-                    "    \"result_code\": \"300\"\n" +
-                    "}");
-        }
-        if(uri.startsWith("/api/product/app/")) {
-            return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"value\": [],\"result_msg\": \"API_OK\",\"result_code\": \"000\"}");
-        }
-        return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"value\":\"OK\",\"result_code\":\"000\",\"result_msg\":\"API_OK\"}");
+            // Just match the url here
+            if(uri.startsWith("/api/accounts/v3/global/login_dmq")) {
+                return handleLoginDmq(parms);
+            }
+            if(uri.startsWith("/api/resource/rooting_app.json?device_cd=ANDROID&local_cd=ENG")) {
+                return handleRoutingApp();
+            }
+            if(uri.startsWith("/api/apns/576/register/")) {
+                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\n" +
+                        "    \"error_params\": null,\n" +
+                        "    \"error_timestamp\": \"2019-02-01 13:08:20\",\n" +
+                        "    \"error_host\": \"neon-api3.nwz.kr\",\n" +
+                        "    \"error_message\": \"java.lang.NullPointerException\",\n" +
+                        "    \"result_msg\": \"API_ERR_EXEC\",\n" +
+                        "    \"result_code\": \"300\"\n" +
+                        "}");
+            }
+            if(uri.startsWith("/api/product/app/") || uri.startsWith("/api/resource/") ) {
+                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"value\": [],\"result_msg\": \"API_OK\",\"result_code\": \"000\"}");
+            }
+            if(uri.startsWith("/api/members/")) {
+                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"value\": true,\"result_msg\": \"API_OK\",\"result_code\": \"000\"}");
+            }
+            if(uri.startsWith("/api/logstash/send/")) {
+                return newFixedLengthResponse("");
+            }
+
+
+            return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"value\":\"OK\",\"result_code\":\"000\",\"result_msg\":\"API_OK\"}");
         } catch (JSONException e) {
             throw new RuntimeException("JSON ERROR");
         }

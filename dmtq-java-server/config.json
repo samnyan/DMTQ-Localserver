@@ -17,12 +17,10 @@
     }
   },
   "proxyServer": {
-    "host": "0.0.0.0",
     "port": 3458,
     "rootCertPath": "files/rootCa.crt",
     "rootKeyPath": "files/key.pem",
     "redirectTarget": "127.0.0.1",
-    "insecure": true,
     "redirectHttpPort": 3456,
     "redirectHttpsPort": 3457,
     "redirectList": [

@@ -40,7 +40,7 @@ public class ServerService extends Service {
     private int sslPort = 3457;
     private int proxyPort = 3458;
 
-    private Thread serverThread;
+    private Thread proxyServerThread;
 
     private Binder binder = new ServerBinder();
 
@@ -106,12 +106,12 @@ public class ServerService extends Service {
         config.setProxyAddress(PROXY);
         config.setAssetAddress(ASSET);
 
-        if(serverThread == null) {
-            serverThread = new Thread(() -> {
+        if(proxyServerThread == null) {
+            proxyServerThread = new Thread(() -> {
                 proxyServer = new ProxyServer(this.proxyPort, this);
                 proxyServer.start();
             });
-            serverThread.start();
+            proxyServerThread.start();
         }
 
         try {
@@ -193,13 +193,13 @@ public class ServerService extends Service {
 //            }
 //            sslGameServer = null;
 //        }
-        if(serverThread != null) {
+        if(proxyServerThread != null) {
             if(proxyServer.isRunning()) {
                 proxyServer.stop();
             }
             try {
-                serverThread.join(0);
-                serverThread = null;
+                proxyServerThread.join(0);
+                proxyServerThread = null;
             } catch (InterruptedException e) {
                 Toast.makeText(this.getApplicationContext(), "Fail to stop proxy thread", Toast.LENGTH_SHORT).show();
             }

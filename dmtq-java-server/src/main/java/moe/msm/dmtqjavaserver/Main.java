@@ -1,8 +1,8 @@
 package moe.msm.dmtqjavaserver;
 
-import com.github.chhsiaoninety.nitmproxy.NitmProxyConfig;
 import fi.iki.elonen.NanoHTTPD;
-import moe.msm.NettyHijackProxy;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpRequest;
 import moe.msm.dmtqjavaserver.service.JavaDatabaseService;
 import moe.msm.dmtqjavaserver.service.JavaFileService;
 import moe.msm.dmtqserver.GameServer;
@@ -11,6 +11,8 @@ import moe.msm.dmtqserver.util.StreamUtil;
 import org.apache.commons.cli.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.littleshoot.proxy.*;
+import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +36,7 @@ public class Main {
 
     private static JavaDatabaseService databaseService;
     private static JavaFileService fileService;
-    private static NettyHijackProxy proxy;
+    private static HttpProxyServerBootstrap proxy;
 
     private static Thread proxyThread;
 
@@ -97,21 +101,9 @@ public class Main {
         for(int i = 0; i < redirectJsonList.length(); i++) {
             redirectList.add(redirectJsonList.getString(i));
         }
-        NitmProxyConfig proxyConfig = new NitmProxyConfig();
-        proxyConfig.setHost(configJson.getJSONObject("proxyServer").getString("host"));
-        proxyConfig.setPort(configJson.getJSONObject("proxyServer").getInt("port"));
-        proxyConfig.setCertFile(configJson.getJSONObject("proxyServer").getString("rootCertPath"));
-        String proxyCaKeyPath = configJson.getJSONObject("proxyServer").getString("rootKeyPath");
-        proxyConfig.setKeyFile(proxyCaKeyPath);
-        proxyConfig.setRedirectDomains(redirectList);
-        proxyConfig.setRedirectTargetHost(configJson.getJSONObject("proxyServer").getString("redirectTarget"));
-        proxyConfig.setInsecure(configJson.getJSONObject("proxyServer").getBoolean("insecure"));
-        proxyConfig.setRedirectTargetHttpPort(configJson.getJSONObject("proxyServer").getInt("redirectHttpPort"));
-        proxyConfig.setRedirectTargetHttpsPort(configJson.getJSONObject("proxyServer").getInt("redirectHttpsPort"));
-
-        if(!new File(proxyCaKeyPath).exists()) {
-            throw new RuntimeException("Proxy cert key file not found");
-        }
+        int proxyPort = configJson.getJSONObject("proxyServer").getInt("port");
+        int redirectHttpPort = configJson.getJSONObject("proxyServer").getInt("redirectHttpPort");
+        int redirectHttpsPort = configJson.getJSONObject("proxyServer").getInt("redirectHttpsPort");
 
         if(databaseService == null) {
             databaseService = new JavaDatabaseService(databaseUrl);
@@ -144,7 +136,34 @@ public class Main {
         }
 
         if(proxy == null) {
-            proxy = new NettyHijackProxy(proxyConfig);
+            proxy = DefaultHttpProxyServer.bootstrap()
+                    .withPort(proxyPort)
+                    .withAllowLocalOnly(false)
+                    .withFiltersSource(new HttpFiltersSourceAdapter() {
+                        public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+                            return new HttpFiltersAdapter(originalRequest) {
+                                @Override
+                                public InetSocketAddress proxyToServerResolutionStarted(
+                                        String resolvingServerHostAndPort) {
+                                    String[] hp = resolvingServerHostAndPort.split(":");
+                                    System.out.println(hp[0]);
+                                    for (String domain :
+                                            redirectList) {
+                                        if(hp[0].contains(domain)) {
+                                            if (hp.length > 1 && hp[1].equals("443")) {
+                                                return new InetSocketAddress(InetAddress.getLoopbackAddress(), redirectHttpsPort);
+                                            } else {
+                                                return new InetSocketAddress(InetAddress.getLoopbackAddress(), redirectHttpPort);
+
+                                            }
+                                        }
+                                    }
+
+                                    return null;
+                                }
+                            };
+                        }
+                    });
         }
 
         try {

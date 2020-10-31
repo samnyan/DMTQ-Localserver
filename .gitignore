@@ -103,3 +103,4 @@ fabric.properties
 
 /key.pem
 /server.pem
+/db.sqlite
